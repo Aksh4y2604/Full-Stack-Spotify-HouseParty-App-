@@ -16,7 +16,7 @@ import {
     Redirect,
 
 } from 'react-router-dom';
-export default function CreateRoom({name}) {
+export default function CreateRoom({history}) {
     const defaultVotes=2;
     const [guestCanPause,setGuestCanPause]=useState(true);
     const [votesToSkip,setVotesToSkip]=useState(defaultVotes);
@@ -26,7 +26,13 @@ export default function CreateRoom({name}) {
     }
     
     function handleGuestCanPauseChange(e){
-        setGuestCanPause(e.target.value==='true'? true: false)
+        if (e.target.value==='true'){
+            setGuestCanPause(true)
+        }
+        else{
+            setGuestCanPause(false)
+        }
+        /* setGuestCanPause(e.target.value==='true'? true: false) */
     }
     function handleRoomButtonPressed(){
         const requestOptions={
@@ -40,7 +46,7 @@ export default function CreateRoom({name}) {
         };
         fetch('/api/create-room',requestOptions)
         .then((response)=>response.json())
-        .then((data)=>console.log(data));
+        .then((data)=>history.push('/room/'+data.code));
 
     }
     return (

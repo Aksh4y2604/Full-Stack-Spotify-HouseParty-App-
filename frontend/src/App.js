@@ -3,7 +3,7 @@ import Homepage from './Homepage';
 
 function App() {
   return (
-    <div className="App">
+    <div className="center">
       <Homepage name="Akshay"/>
     </div>
   );

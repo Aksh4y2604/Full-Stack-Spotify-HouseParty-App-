@@ -17,7 +17,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import Room from './Room'
 
 
 export default function Homepage({ name }) {
@@ -33,6 +33,7 @@ export default function Homepage({ name }) {
                 </Route>
                 <Route path='/join' component={RoomJoinPage}></Route>
                 <Route path='/create' component={CreateRoom}></Route>
+                <Route path='/room/:roomCode' component={Room}></Route>
             </Switch>
         </Router>
     </div>
