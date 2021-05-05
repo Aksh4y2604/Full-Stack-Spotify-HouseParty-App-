@@ -30,7 +30,7 @@ export default function RoomJoinPage({history}) {
     }
     return (
         <div>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
             <Grid item xs={12} className="gridItem">
                 <Typography component="h4" variant='h4'> 
                     Join Room
@@ -44,9 +44,17 @@ export default function RoomJoinPage({history}) {
                 onChange={(e)=>{setRoomCode(e.target.value)}} 
                 helperText={error}
                 color="primary"></TextField>
-                <Button color="secondary" onClick={()=>submithandler()}>JOIN ROOM </Button>
+               
 
             </Grid>
+            <Grid item xs={12} className="gridItem">
+            <Button variant="contained" color="secondary" onClick={()=>submithandler()}>JOIN ROOM </Button>    
+            </Grid>
+            <Grid item xs={12} className="gridItem">
+            <Button variant="contained" color="primary" onClick={()=>{history.push('/')}}>Back</Button>    
+            </Grid>
+
+            
         </Grid>
         </div>
     )

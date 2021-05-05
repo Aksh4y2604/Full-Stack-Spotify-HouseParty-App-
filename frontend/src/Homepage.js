@@ -17,7 +17,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Room from './Room'
+import Room from './Room';
+import HomepageContent from './HomepageContent';
 
 
 export default function Homepage({ name }) {
@@ -28,8 +29,8 @@ export default function Homepage({ name }) {
         
         <Router>
             <Switch>
-                <Route exact path='/'>
-                    <h1> This is the homepage { name } </h1>
+                <Route exact path='/' component={HomepageContent}>
+                    
                 </Route>
                 <Route path='/join' component={RoomJoinPage}></Route>
                 <Route path='/create' component={CreateRoom}></Route>
