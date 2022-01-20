@@ -11,12 +11,43 @@ import PauseIcon from "@material-ui/icons/Pause";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 
 function MusicPlayer(props) {
-    var image_url = props.image_url;
-    var song_name = props.song_name;
-    var artist_name = props.artist_name;
-    var album_name = props.album_name;
-    var is_playing = props.is_playing; 
+
+    const pauseSong =(()=>{
+        const requestOptions = {
+            method: 'PUT', 
+            headers: { 'Content-Type': 'application/json' },
+
+        };
+        fetch('/spotify_link/pause', requestOptions)
+        
+    })
+    const playsong =(()=>{
+        const requestOptions = {
+            method: 'PUT', 
+            headers: { 'Content-Type': 'application/json' },
+        };
+        fetch('/spotify_link/play', requestOptions)
+        
+    })
     const songProgress = (props.time / props.duration) * 100;
+    const handlePlayPause = (()=>{
+
+        if(props.is_playing){
+            pauseSong()
+        }else{
+            playsong()
+        }
+    })
+    const handleSkipSong = (()=>{
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        fetch('/spotify_link/skip', requestOptions)
+        .then(response => {console.log("Skip", response)})
+
+    })
+
 
   return (
     <div>
@@ -34,17 +65,19 @@ function MusicPlayer(props) {
               {props.artists}
             </Typography>
             <div>
-              <IconButton>
+              <IconButton onClick={handlePlayPause}>
                 {props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
               </IconButton>
-              <IconButton>
-                <SkipNextIcon />
+              <IconButton onClick={handleSkipSong}>
+                <SkipNextIcon />{props.votes} {" "}/ {" "}{props.votes_required}
               </IconButton>
             </div>
           </Grid>
         </Grid>
         <LinearProgress variant="determinate" value={songProgress} />
+        
       </Card>
+      <p>{props.is_playing}</p>
 
 
 

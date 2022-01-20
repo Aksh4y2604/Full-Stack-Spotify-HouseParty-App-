@@ -44,7 +44,6 @@ def refresh_token(session_id):
 
     access_token = response.get('access_token')
     token_type = response.get('token_type')
-    refresh_token = response.get('refresh_token')
     expires_in = response.get('expires_in')
     error = response.get('error')
 
@@ -67,3 +66,16 @@ def request_spotify_api_call(session_id, endpoint, post_= False, put_= False):
         return response.json()
     except:
         return "Issue with API call"
+
+def pause_song(session_id):
+    return request_spotify_api_call(session_id, 'player/pause',put_=True)
+
+
+
+
+def play_song(session_id):
+    return request_spotify_api_call(session_id, 'player/play', put_=True)
+
+
+def skip_song(session_id):
+    return request_spotify_api_call(session_id, 'player/next',post_=True)
