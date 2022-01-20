@@ -2,6 +2,7 @@ import { Dialog, responsiveFontSizes } from '@material-ui/core';
 import React, { useState,useEffect,useRef } from 'react';
 import {Button,Typography,Grid} from '@material-ui/core';
 import CreateRoom from './CreateRoomPage'
+import MusicPlayer from './MusicPlayer';
 
 
 export default function Room({match,history}) {
@@ -158,7 +159,7 @@ export default function Room({match,history}) {
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} className="gridItem">
                 <Typography variant="h5" component='h5'>RoomCode: {roomCode}</Typography>
-                <Typography variant="h5" component='h5'>{song?.title}</Typography>
+                <MusicPlayer {...song}></MusicPlayer>
 
                 </Grid>
 
