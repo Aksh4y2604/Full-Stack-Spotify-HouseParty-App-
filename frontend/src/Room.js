@@ -1,5 +1,5 @@
 import { Dialog, responsiveFontSizes } from '@material-ui/core';
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import {Button,Typography,Grid} from '@material-ui/core';
 import CreateRoom from './CreateRoomPage'
 
@@ -9,13 +9,55 @@ export default function Room({match,history}) {
     const [guestCanPause, setGuestCanPause] = useState(false)
     const [isHost, setIshost] = useState(false)
     const [showSettings,setShowSettings]=useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [song, setSong] = useState(null)
+    const [dependency, setDependency] = useState(0)
     let roomCode = match.params.roomCode;
     
-    
+    function AuthenticateSpotify(){
+            console.log('Authenticating Spotify')
+            fetch("/spotify_link/isAuth")
+            .then(res => res.json())
+            .then(data => {
+                if(!data.authenticated){
+                    console.log(data);
+                    fetch('/spotify_link/get_auth_url')
+                    .then(res => res.json())
+                    .then(data => {
+                        window.location.replace(data.url);
+                        console.log(data.url);
+                        });
+                }else{
+                    setIsAuthenticated(true);
+                }
+            });
+    }
+    const useInterval = (callback, delay) => {
+
+        const savedCallback = useRef();
+      
+        useEffect(() => {
+          savedCallback.current = callback;
+        }, [callback]);
+      
+      
+        useEffect(() => {
+          function tick() {
+            savedCallback.current();
+          }
+          if (delay !== null) {
+            const id = setInterval(tick, delay);
+            return () => clearInterval(id);
+          }
+        }, [delay]);
+      }
+    //polling for song changes
+
+        
     function updateShowSettings(value){
         setShowSettings(value)
     }
-    
+    useInterval(getCurrentSong, 1000);
     
     function renderSettingsButton(){
         return (
@@ -46,7 +88,24 @@ export default function Room({match,history}) {
             </Grid>
         )
     }
-    
+    function getCurrentSong(){
+        fetch('/spotify_link/current_song')
+        .then(res => {
+            if(!res.ok){
+                console.log(res);
+                return {"song": 'not found '}
+            }else{
+                console.log(res)
+                return res.json();
+            }
+        })
+        .then(data => {
+            console.log("Current Song: ",data);
+            setSong(data);
+        })
+    }
+
+
     
     function getDetails(){
     fetch('/api/get-room'+'?code='+roomCode)
@@ -59,8 +118,14 @@ export default function Room({match,history}) {
         console.log(data)
         setVotesToSkip(data.votes_to_skip)
         setGuestCanPause(data.guest_can_pause)
-        setIshost(data.is_host)
-        console.log(data)
+        console.log(data.is_host)
+/*         setIshost(data.is_host)
+        console.log(isHost) */
+        if(data.is_host){
+            setIshost(true)
+            AuthenticateSpotify()
+            /* get_current_song() */
+        }
     })}
     
     
@@ -69,14 +134,18 @@ export default function Room({match,history}) {
         const requestOptions={
             method:"POST",
             header:{'Content-Type':"application/json"},
-
         };
         fetch('/api/leave-room',requestOptions)
         .then((_res)=>{history.push('/')})
     }
 
 
-    useEffect(()=>{getDetails()},[])
+    useEffect(()=>{
+        getDetails();
+        getCurrentSong();
+        
+    },[])
+
 
     if(showSettings)
         {
@@ -89,16 +158,10 @@ export default function Room({match,history}) {
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} className="gridItem">
                 <Typography variant="h5" component='h5'>RoomCode: {roomCode}</Typography>
+                <Typography variant="h5" component='h5'>{song?.title}</Typography>
+
                 </Grid>
-                <Grid item xs={12} className="gridItem">
-                <Typography variant="h6" component='h6'>Votes:{votesToSkip}</Typography>
-                </Grid>
-                <Grid item xs={12} className="gridItem">
-                <Typography variant="h6" component='h6'>Is Host={isHost.toString()}</Typography>
-                </Grid>
-                <Grid item xs={12} className="gridItem">
-                <Typography variant="h6" component='h6'>Guest Can Pause={guestCanPause.toString()}</Typography>
-                </Grid>
+
                 {isHost ? renderSettingsButton() : null}
                 <Grid item xs={12} className="gridItem">
                 <Button 
