@@ -156,11 +156,12 @@ export default function Room({match,history}) {
     return (
         
         <div>
-            <Grid container spacing={2} alignItems="center">
+            <Grid container spacing={4} alignItems="center">
                 <Grid item xs={12} className="gridItem">
-                <Typography variant="h5" component='h5'>RoomCode: {roomCode}</Typography>
-                <MusicPlayer {...song}></MusicPlayer>
-
+                    <Typography variant="h5" component='h5' padding="4">Code: {roomCode}</Typography>
+                </Grid>
+                <Grid item xs={12} className="gridItem">
+                    <MusicPlayer {...song}></MusicPlayer>
                 </Grid>
 
                 {isHost ? renderSettingsButton() : null}
